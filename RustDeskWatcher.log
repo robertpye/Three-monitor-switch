@@ -1,0 +1,9 @@
+2025-08-24 20:49:02.056 === RustDeskWatcher starting ===
+2025-08-24 20:49:02.068 Watching: C:\Windows\ServiceProfiles\LocalService\AppData\Roaming\RustDesk\log\server\RustDesk_rCURRENT.log
+2025-08-24 20:49:40.109 RUN: "C:\Users\mail\Documents\000 Development\Three monitor switch\display_config.bat" config1
+2025-08-24 20:52:32.320 === RustDeskWatcher starting ===
+2025-08-24 20:52:32.322 Watching: C:\Windows\ServiceProfiles\LocalService\AppData\Roaming\RustDesk\log\server\RustDesk_rCURRENT.log
+2025-08-24 20:53:28.303 === RustDeskWatcher starting ===
+2025-08-24 20:53:28.305 Watching: C:\Windows\ServiceProfiles\LocalService\AppData\Roaming\RustDesk\log\server\RustDesk_rCURRENT.log
+2025-08-24 20:53:43.712 RUN: "C:\Users\mail\Documents\000 Development\Three monitor switch\display_config.bat" config2
+2025-08-24 20:54:35.225 RUN: "C:\Users\mail\Documents\000 Development\Three monitor switch\display_config.bat" config1

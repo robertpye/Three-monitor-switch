@@ -1,98 +1,126 @@
-# Windows Multi-Monitor Configuration Script
+# Windows Multi-Monitor Configuration + RustDesk Auto-Switch
 
-A simple batch script wrapper around [MultiMonitorTool](https://www.nirsoft.net/utils/multi_monitor_tool.html)  
-to quickly switch between predefined monitor layouts on **Windows 11**.
+This repo provides:
+
+- `display_config.bat` — Predefined monitor layouts using NirSoft [MultiMonitorTool](https://www.nirsoft.net/utils/multi_monitor_tool.html).
+- `RustDeskWatcher.ps1` — A PowerShell script that tails RustDesk **server logs** and triggers monitor configs automatically:
+  - On **RustDesk connect** → `display_config.bat config2`
+  - On **RustDesk disconnect** → `display_config.bat config1`
+- `RustDeskWatcherTask.xml` — Importable Scheduled Task that runs the watcher at boot.
 
 ---
 
 ## 🚀 Features
-- Toggle between multiple monitor configurations with a menu or command-line argument.
-- Automatically enable/disable monitors as needed.
-- Set resolution, refresh rate, orientation, and primary display.
-- Fully offline, lightweight (uses NirSoft's `MultiMonitorTool.exe`).
+- Quickly switch between monitor configs from the menu or command-line.
+- Auto-switch layout when RustDesk sessions start/end.
+- Lightweight, no external dependencies beyond MultiMonitorTool + PowerShell.
 
 ---
 
 ## 📂 Project Structure
 
+Three monitor switch/
+├── display_config.bat
+├── MultiMonitorTool.exe
+├── RustDeskWatcher.ps1
+├── RustDeskWatcherTask.xml
+└── RustDeskWatcher.log (created at runtime)
 
-├── display_config.bat # Main batch script
-├── display_config.bak # Backup of last batch edit
-├── MultiMonitorTool.exe # NirSoft utility (required)
-├── MultiMonitorTool.cfg # Tool configuration
-├── MultiMonitorTool.chm # Help file from NirSoft
-├── readme-multimonitor.txt # Original NirSoft readme
-└── monitors.txt # Sample monitor dump
+sql
+Copy
+Edit
 
+RustDesk logs are watched at:
+C:\Windows\ServiceProfiles\LocalService\AppData\Roaming\RustDesk\log\server
 
----
-
-## ⚙️ Configurations
-
-The batch script provides **4 predefined options**:
-
-1. **All monitors enabled**  
-   - Monitor 3 (`\\.\DISPLAY1`) → Primary, 1920×1080 (landscape)  
-   - Monitor 1 (`\\.\DISPLAY2`) → Secondary, 1920×1080 (landscape)  
-   - Monitor 2 (`\\.\DISPLAY3`) → Portrait, 1200×1920  
-
-2. **Only Monitor 3 at 1680×1050**
-
-3. **Monitor 1 + 3 only**  
-   - Monitor 3 (`\\.\DISPLAY1`) → Primary, 1920×1080  
-   - Monitor 1 (`\\.\DISPLAY2`) → Secondary, 1920×1080  
-
-4. **Only Monitor 3 at 1920×1080**
+yaml
+Copy
+Edit
 
 ---
 
-## 🔧 Usage
+## 🔧 Configurations
 
-### Interactive Mode
-Double-click `display_config.bat` and choose from the menu (1–4).
+`display_config.bat` defines 4 options:
 
-### Command-Line Mode
-Run with argument:
+1. **config1** — All monitors (restores baseline)
+2. **config2** — Only Monitor 3 at 1680×1050
+3. **config3** — Monitor 1 + 3 only
+4. **config4** — Only Monitor 3 at 1920×1080
+
+Run directly:
 ```bat
 display_config.bat config1
 display_config.bat config2
-display_config.bat config3
-display_config.bat config4
+Run without args for an interactive menu.
 
-🖥 Requirements
+🛠 Deploy RustDesk Auto-Switch
+1. Place files
+Copy display_config.bat, MultiMonitorTool.exe, RustDeskWatcher.ps1, and RustDeskWatcherTask.xml into:
 
-Windows 10/11
+cpp
+Copy
+Edit
+C:\Users\mail\Documents\000 Development\Three monitor switch
+2. Import the task
+Open an Admin shell:
 
-MultiMonitorTool
- (place MultiMonitorTool.exe in the same folder as the script)
+cmd
+Copy
+Edit
+schtasks /Create /TN "RustDeskWatcher" /XML "C:\Users\mail\Documents\000 Development\Three monitor switch\RustDeskWatcherTask.xml" /F
+Start it immediately (no reboot):
 
-📝 Notes
+cmd
+Copy
+Edit
+schtasks /Run /TN "RustDeskWatcher"
+3. Test
+Connect via RustDesk → layout switches to config2.
 
-Monitor mappings (\\.\DISPLAYx) may differ by system. Run:
+Disconnect → layout reverts to config1.
 
+Logs are written to:
+
+bash
+Copy
+Edit
+RustDeskWatcher.log
+🔍 Detection Markers
+Watcher looks for these lines in RustDesk logs:
+
+Connect: Connection opened
+
+Disconnect: Connection closed
+
+If your RustDesk version uses different wording, update $ConnectRegex / $DisconnectRegex in RustDeskWatcher.ps1.
+
+🛠 Troubleshooting
+If you see SUBSCRIBER_EXISTS, the script was already running — use Task Scheduler instead of running it twice manually.
+
+Ensure MultiMonitorTool.exe is present in the same folder.
+
+To adjust monitor IDs, run:
+
+c
+Copy
+Edit
 MultiMonitorTool.exe /stext monitors.txt
-
-
-to identify your setup and adjust the script accordingly.
-
-Orientation changes are handled with MultiMonitorTool.exe /SetOrientation.
-
-Disabling monitors may cause Windows to reshuffle their layout. Config 1 explicitly re-enables all monitors to restore consistency.
-
-🛠 Customization
-
-Edit display_config.bat and adjust Width, Height, PositionX, PositionY, or DisplayOrientation for your monitors.
-
-You can generate your own /SetMonitors commands directly from the MultiMonitorTool GUI:
-Edit → Copy /SetMonitors Command.
-
 📜 License
-
-This project is released under the MIT License
-.
+MIT License
 
 🙏 Credits
-
-Batch script wrapper: your name here
+Batch + watcher integration: Rob
 
 Multi-monitor control: NirSoft MultiMonitorTool
+
+yaml
+Copy
+Edit
+
+As Admin is Powershell
+
+PS C:\Users\mail\Documents\000 Development\Three monitor switch> schtasks /Create /TN "RustDeskWatcher" /XML "C:\Users\mail\Documents\000 Development\Three monitor switch\RustDeskWatcherTask.xml" /F
+>>
+SUCCESS: The scheduled task "RustDeskWatcher" has successfully been created.
+PS C:\Users\mail\Documents\000 Development\Three monitor switch>
