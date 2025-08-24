@@ -2,11 +2,11 @@
 
 This repo provides:
 
-- `display_config.bat` — Predefined monitor layouts using NirSoft [MultiMonitorTool](https://www.nirsoft.net/utils/multi_monitor_tool.html).
-- `RustDeskWatcher.ps1` — A PowerShell script that tails RustDesk **server logs** and triggers monitor configs automatically:
+- **`display_config.bat`** — Predefined monitor layouts using NirSoft [MultiMonitorTool](https://www.nirsoft.net/utils/multi_monitor_tool.html).
+- **`RustDeskWatcher.ps1`** — A PowerShell script that tails RustDesk **server logs** and triggers monitor configs automatically:
   - On **RustDesk connect** → `display_config.bat config2`
   - On **RustDesk disconnect** → `display_config.bat config1`
-- `RustDeskWatcherTask.xml` — Importable Scheduled Task that runs the watcher at boot.
+- **`RustDeskWatcherTask.xml`** — Importable Scheduled Task that runs the watcher at boot.
 
 ---
 
@@ -19,75 +19,85 @@ This repo provides:
 
 ## 📂 Project Structure
 
+
+
 Three monitor switch/
 ├── display_config.bat
 ├── MultiMonitorTool.exe
 ├── RustDeskWatcher.ps1
 ├── RustDeskWatcherTask.xml
-└── RustDeskWatcher.log (created at runtime)
+└── RustDeskWatcher.log # created at runtime
 
-sql
-Copy
-Edit
 
-RustDesk logs are watched at:
+RustDesk server logs are tailed from:
+
+
+
 C:\Windows\ServiceProfiles\LocalService\AppData\Roaming\RustDesk\log\server
 
-yaml
-Copy
-Edit
 
 ---
 
 ## 🔧 Configurations
 
-`display_config.bat` defines 4 options:
+`display_config.bat` defines 4 monitor layouts:
 
 1. **config1** — All monitors (restores baseline)
 2. **config2** — Only Monitor 3 at 1680×1050
 3. **config3** — Monitor 1 + 3 only
 4. **config4** — Only Monitor 3 at 1920×1080
 
-Run directly:
+Run directly from the command line:
+
 ```bat
 display_config.bat config1
 display_config.bat config2
-Run without args for an interactive menu.
+display_config.bat config3
+display_config.bat config4
+
+
+Run with no arguments to get an interactive menu.
 
 🛠 Deploy RustDesk Auto-Switch
 1. Place files
-Copy display_config.bat, MultiMonitorTool.exe, RustDeskWatcher.ps1, and RustDeskWatcherTask.xml into:
 
-cpp
-Copy
-Edit
+Copy these into:
+
 C:\Users\mail\Documents\000 Development\Three monitor switch
+
+
+display_config.bat
+
+MultiMonitorTool.exe
+
+RustDeskWatcher.ps1
+
+RustDeskWatcherTask.xml
+
 2. Import the task
-Open an Admin shell:
 
-cmd
-Copy
-Edit
+Open an Admin PowerShell or CMD:
+
 schtasks /Create /TN "RustDeskWatcher" /XML "C:\Users\mail\Documents\000 Development\Three monitor switch\RustDeskWatcherTask.xml" /F
-Start it immediately (no reboot):
 
-cmd
-Copy
-Edit
+
+Start it immediately (without reboot):
+
 schtasks /Run /TN "RustDeskWatcher"
+
 3. Test
+
 Connect via RustDesk → layout switches to config2.
 
 Disconnect → layout reverts to config1.
 
 Logs are written to:
 
-bash
-Copy
-Edit
 RustDeskWatcher.log
+
 🔍 Detection Markers
-Watcher looks for these lines in RustDesk logs:
+
+The watcher looks for these strings in RustDesk logs:
 
 Connect: Connection opened
 
@@ -96,31 +106,34 @@ Disconnect: Connection closed
 If your RustDesk version uses different wording, update $ConnectRegex / $DisconnectRegex in RustDeskWatcher.ps1.
 
 🛠 Troubleshooting
-If you see SUBSCRIBER_EXISTS, the script was already running — use Task Scheduler instead of running it twice manually.
 
-Ensure MultiMonitorTool.exe is present in the same folder.
+Error SUBSCRIBER_EXISTS → The script is already running. Use Task Scheduler instead of starting it twice manually.
 
-To adjust monitor IDs, run:
+MultiMonitorTool.exe not found → Place it in the same folder as display_config.bat.
 
-c
-Copy
-Edit
+Different monitor IDs → Dump your mapping:
+
 MultiMonitorTool.exe /stext monitors.txt
+
+
+Update \\.\DISPLAYx in the batch file accordingly.
+
 📜 License
+
 MIT License
 
 🙏 Credits
+
 Batch + watcher integration: Rob
 
 Multi-monitor control: NirSoft MultiMonitorTool
 
-yaml
-Copy
-Edit
 
-As Admin is Powershell
+---
 
-PS C:\Users\mail\Documents\000 Development\Three monitor switch> schtasks /Create /TN "RustDeskWatcher" /XML "C:\Users\mail\Documents\000 Development\Three monitor switch\RustDeskWatcherTask.xml" /F
->>
-SUCCESS: The scheduled task "RustDeskWatcher" has successfully been created.
-PS C:\Users\mail\Documents\000 Development\Three monitor switch>
+This version removes all the spurious `sql`, `yaml`, etc. code fences and organizes things in a clean developer-friendly format.  
+
+Would you like me to also add a **screenshot/example log snippet** to the README so users can see what the “Connection opened/closed” lines look like in practice?
+
+
+ChatGP
