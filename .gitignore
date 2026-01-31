@@ -1,0 +1,3 @@
+# Log files
+*.log
+rust_desk/RustDeskWatcher.state
