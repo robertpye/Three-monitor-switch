@@ -1,108 +1,121 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
 
-rem === Resolve script dir so MMT works no matter where called from ===
+rem ======== EDIT THESE THREE (exact Monitor IDs from MMT) ========
+rem Example formats:
+rem   MONITOR\GSM587E\{4d36e96e-e325-11ce-bfc1-08002be10318}\0003
+rem   MONITOR\GSM587E\{4d36e96e-e325-11ce-bfc1-08002be10318}\0001
+rem   MONITOR\HWP286A\{4d36e96e-e325-11ce-bfc1-08002be10318}\0002
+set "MID_LEFT=MONITOR\GSM587E\{4d36e96e-e325-11ce-bfc1-08002be10318}\0001"
+set "MID_CENTER=MONITOR\GSM587E\{4d36e96e-e325-11ce-bfc1-08002be10318}\0003"
+set "MID_RIGHT=MONITOR\HWP286A\{4d36e96e-e325-11ce-bfc1-08002be10318}\0002"
+rem ===============================================================
+
 set "SCRIPT_DIR=%~dp0"
 pushd "%SCRIPT_DIR%"
-
-REM ===================================================== 
-REM If no args -> show menu 
-REM My 1 is detected as \\.\DISPLAY2 
-REM My 2 is detected as \\.\DISPLAY3 
-REM My 3 is detected as \\.\DISPLAY1 
-REM =====================================================
-
-rem === ABS path to MultiMonitorTool (edit if it lives elsewhere) ===
 set "MMT=%SCRIPT_DIR%MultiMonitorTool.exe"
-
 if not exist "%MMT%" (
   echo [%date% %time%] ERROR: MultiMonitorTool.exe not found at "%MMT%"
   goto :end
 )
 
-rem =====================================================
-rem  Arg parsing
-rem  Supports: display_config.bat 1|2|3|4  OR  config1|config2|config3|config4
-rem =====================================================
+rem Some stacks need elevation for topology changes:
+whoami /groups | find "S-1-16-12288" >nul || echo [INFO] Not elevated. If nothing changes, Run as Administrator.
+
+rem ---- Arg parsing ----
 set "choice=%~1"
 if "%choice%"=="" goto :menu
-set "choice=%choice:"=%"    rem strip any quotes
-set "choice=%choice: =%"    rem trim spaces
-
-rem map numeric to labels
+set "choice=%choice:"=%"
+set "choice=%choice: =%"
 if /I "%choice%"=="1" set "choice=config1"
 if /I "%choice%"=="2" set "choice=config2"
 if /I "%choice%"=="3" set "choice=config3"
 if /I "%choice%"=="4" set "choice=config4"
-
+if /I "%choice%"=="5" set "choice=config5"
 if /I "%choice%"=="config1" goto :config1
 if /I "%choice%"=="config2" goto :config2
 if /I "%choice%"=="config3" goto :config3
 if /I "%choice%"=="config4" goto :config4
-
+if /I "%choice%"=="config5" goto :config5
 echo Unknown option: %~1
 goto :end
 
 :menu
-echo ==============================
-echo   Select Display Configuration
-echo ==============================
-echo 1. Config 1 - All monitors (3=primary 1920x1080, 1=1920x1080, 2=portrait 1200x1920)
-echo 2. Config 2 - Only Monitor 3 at 1680x1050
-echo 3. Config 3 - Monitor 1 + 3 (both 1920x1080)
-echo 4. Config 4 - Only Monitor 3 at 1920x1080
-set /p choice="Enter choice (1-4): "
-if "%choice%"=="1" goto :config1
-if "%choice%"=="2" goto :config2
-if "%choice%"=="3" goto :config3
-if "%choice%"=="4" goto :config4
+echo ===========================================
+echo   Select Display Configuration (LANDSCAPE)
+echo ===========================================
+echo 1. All monitors  (Center primary, L and R landscape)
+echo 2. Center only   (primary 1680x1050)
+echo 3. Left + Center (both landscape)
+echo 4. Center + Right (both landscape)
+echo 5. Right only    (primary 1920x1200)
+set /p choice="Enter choice (1-5): "
+if /I "%choice%"=="1" goto :config1
+if /I "%choice%"=="2" goto :config2
+if /I "%choice%"=="3" goto :config3
+if /I "%choice%"=="4" goto :config4
+if /I "%choice%"=="5" goto :config5
 echo Invalid choice.
 goto :end
 
 
-rem =====================================================
-rem  CONFIGURATIONS    (uses your mapping notes)
-rem  My 1 -> \\.\DISPLAY2
-rem  My 2 -> \\.\DISPLAY3
-rem  My 3 -> \\.\DISPLAY1
-rem =====================================================
+rem ========== CONFIGS (all landscape) ==========
 
 :config1
-echo Applying Config 1 (All monitors)...
-"%MMT%" /enable "\\.\DISPLAY1" "\\.\DISPLAY2" "\\.\DISPLAY3"
+echo Applying Config 1 (All monitors, center primary)...
+"%MMT%" /enable "%MID_CENTER%" 
+timeout /t 1 /nobreak >nul
+"%MMT%" /enable "%MID_LEFT%" 
+timeout /t 1 /nobreak >nul
+"%MMT%" /enable "%MID_RIGHT%"
+timeout /t 1 /nobreak >nul
+
+rem Landscape everywhere, top-aligned for simplicity
 "%MMT%" /SetMonitors ^
- "Name=\\.\DISPLAY1 Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=0 PositionY=0" ^
- "Name=\\.\DISPLAY2 BitsPerPixel=32 Width=1920 Height=1080 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=-1920 PositionY=0" ^
- "Name=\\.\DISPLAY3 BitsPerPixel=32 Width=1200 Height=1920 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=1920 PositionY=0"
-"%MMT%" /SetOrientation "\\.\DISPLAY3" 90
+ "Name=%MID_LEFT%   BitsPerPixel=32 Width=1920 Height=1080 DisplayOrientation=0 PositionX=-1920 PositionY=0" ^
+ "Name=%MID_CENTER% Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayOrientation=0 PositionX=0 PositionY=0" ^
+ "Name=%MID_RIGHT%  BitsPerPixel=32 Width=1920 Height=1200 DisplayOrientation=0 PositionX=1920 PositionY=0"
+"%MMT%" /SetPrimary "%MID_CENTER%"
 goto :done
 
 :config2
-echo Applying Config 2 (Only Monitor 3 at 1680x1050)...
-rem Monitor 3 == \\.\DISPLAY1 in your mapping
-"%MMT%" /disable "\\.\DISPLAY2" "\\.\DISPLAY3"
-"%MMT%" /SetMonitors ^
- "Name=\\.\DISPLAY1 Primary=1 BitsPerPixel=32 Width=1680 Height=1050 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=0 PositionY=0"
+echo Applying Config 2 (Center only @ 1680x1050)...
+"%MMT%" /enable "%MID_CENTER%"
+timeout /t 1 /nobreak >nul
+"%MMT%" /SetMonitors "Name=%MID_CENTER% Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayOrientation=0 PositionX=0 PositionY=0"
+"%MMT%" /disable "%MID_LEFT%" "%MID_RIGHT%"
 goto :done
 
 :config3
-echo Applying Config 3 (Monitor 1 + 3)...
-rem Disable middle (your monitor 2 == \\.\DISPLAY3)
-"%MMT%" /disable "\\.\DISPLAY3"
+echo Applying Config 3 (Left + Center)...
+"%MMT%" /enable "%MID_CENTER%" "%MID_LEFT%"
+"%MMT%" /disable "%MID_RIGHT%"
+timeout /t 1 /nobreak >nul
 "%MMT%" /SetMonitors ^
- "Name=\\.\DISPLAY1 Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=0 PositionY=0" ^
- "Name=\\.\DISPLAY2 BitsPerPixel=32 Width=1920 Height=1080 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=-1920 PositionY=0"
+ "Name=%MID_LEFT%   BitsPerPixel=32 Width=1920 Height=1080 DisplayOrientation=0 PositionX=-1920 PositionY=0" ^
+ "Name=%MID_CENTER% Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayOrientation=0 PositionX=0 PositionY=0"
 goto :done
 
 :config4
-echo Applying Config 4 (Only Monitor 3 at 1920x1080)...
-"%MMT%" /disable "\\.\DISPLAY2" "\\.\DISPLAY3"
+echo Applying Config 4 (Center + Right)...
+"%MMT%" /enable "%MID_CENTER%" "%MID_RIGHT%"
+"%MMT%" /disable "%MID_LEFT%"
+timeout /t 1 /nobreak >nul
 "%MMT%" /SetMonitors ^
- "Name=\\.\DISPLAY1 Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayFlags=0 DisplayFrequency=60 DisplayOrientation=0 PositionX=0 PositionY=0"
+ "Name=%MID_CENTER% Primary=1 BitsPerPixel=32 Width=1920 Height=1080 DisplayOrientation=0 PositionX=0 PositionY=0" ^
+ "Name=%MID_RIGHT%  BitsPerPixel=32 Width=1920 Height=1200 DisplayOrientation=0 PositionX=1920 PositionY=0"
+goto :done
+
+:config5
+echo Applying Config 5 (Right only, primary)...
+"%MMT%" /disable "%MID_LEFT%" "%MID_CENTER%"
+timeout /t 1 /nobreak >nul
+"%MMT%" /SetMonitors "Name=%MID_RIGHT% Primary=1 BitsPerPixel=32 Width=1920 Height=1200 DisplayOrientation=0 PositionX=0 PositionY=0"
 goto :done
 
 :done
-echo [%date% %time%] Applied %choice% >> "%SCRIPT_DIR%display_config.log"
+>>"%SCRIPT_DIR%display_config.log" echo [%date% %time%] Applied %choice%
+goto :end
 
 :end
 popd

@@ -119,6 +119,33 @@ MultiMonitorTool.exe /stext monitors.txt
 
 Update `\\.\DISPLAYx` in the batch file accordingly.
 
+## 17/09/2025 A note on the recent changes. Monitor position and orientation
+
+You control that “sticks up a bit” with PositionY on the left screen.
+MultiMonitorTool (and Windows) use a virtual desktop where the primary’s top-left = (0,0). X grows to the right, Y grows downward. Negative Y moves a display up.
+
+Given your config1:
+
+Center (primary) = 1920×1080 at (0,0)
+
+Left (portrait) = 1080×1920 at (-1920,0) ← this X is wrong for portrait; should be -1080
+
+Right = 1920×1200 at (1920,0)
+
+Pick the vertical alignment you want for the left monitor
+
+Let Hc=1080 (center height), Hl=1920 (left height), Δ=Hl−Hc=840.
+
+Top aligned: PositionY = 0 (what you have now)
+
+Centered vertically: PositionY = (Hc−Hl)/2 = (1080−1920)/2 = -420
+
+Bottom aligned: PositionY = Hc−Hl = 1080−1920 = -840
+
+From your screenshot, “sticks up a bit” usually means centered. So use PositionY=-420.
+
+Also fix the left X for portrait width: PositionX=-1080 (not -1920).
+
 ---
 
 ## 📜 License
