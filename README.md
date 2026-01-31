@@ -1,5 +1,9 @@
 # Windows Multi-Monitor Configuration + RustDesk Auto-Switch
 
+- **`Win + P = project menu to cycle through display modes!`**
+
+
+
 This repo provides:
 
 - **`display_config.bat`** — Predefined monitor layouts using NirSoft [MultiMonitorTool](https://www.nirsoft.net/utils/multi_monitor_tool.html).
