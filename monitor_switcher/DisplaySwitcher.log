@@ -533,3 +533,74 @@
 [2026-31-01 18:10:51] [INFO] Monitor count after change: 3 
 [2026-31-01 18:10:51] [INFO] Configuration applied successfully 
 [2026-31-01 18:10:51] [INFO] DisplaySwitcher execution complete with exit code: 0 
+[2026-31-01 18:19:03] [INFO] DisplaySwitcher v1.0.0 starting... 
+[2026-31-01 18:19:03] [INFO] Initializing system... 
+ 
+[2026-31-01 18:19:03] [INFO] System initialization complete 
+[2026-31-01 18:22:43] [INFO] DisplaySwitcher v1.0.0 starting... 
+[2026-31-01 18:22:43] [INFO] Initializing system... 
+ 
+[2026-31-01 18:22:43] [INFO] System initialization complete 
+[2026-31-01 18:22:43] [INFO] Requested profile: RustDesk 
+[2026-31-01 18:22:43] [INFO] Executing configuration for profile: RustDesk 
+[2026-31-01 18:22:44] [INFO] Querying display state... 
+[2026-31-01 18:22:45] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:22:45] [INFO] Current monitor count: 3 
+[2026-31-01 18:22:45] [INFO] Applying DisplayFusion profile: RustDesk 
+[2026-31-01 18:22:58] [WARNING] DisplayFusion command 'monitorloadprofile' returned unknown error code: -1 
+[2026-31-01 18:22:58] [ERROR] Failed to apply profile: RustDesk (Error: -1) 
+[2026-31-01 18:22:59] [ERROR] Failed to apply configuration profile 
+[2026-31-01 18:22:59] [INFO] DisplaySwitcher execution complete with exit code: -1 
+[2026-31-01 18:24:15] [INFO] DisplaySwitcher v1.0.0 starting... 
+[2026-31-01 18:24:15] [INFO] Initializing system... 
+ 
+[2026-31-01 18:24:15] [INFO] System initialization complete 
+[2026-31-01 18:24:15] [INFO] Using custom profile name: TripleMonitor 
+[2026-31-01 18:24:15] [INFO] Requested profile: TripleMonitor 
+[2026-31-01 18:24:15] [INFO] Executing configuration for profile: TripleMonitor 
+[2026-31-01 18:24:15] [INFO] Querying display state... 
+[2026-31-01 18:24:16] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:24:16] [INFO] Current monitor count: 3 
+[2026-31-01 18:24:16] [INFO] Applying DisplayFusion profile: TripleMonitor 
+[2026-31-01 18:24:20] [INFO] Profile command sent successfully: TripleMonitor 
+[2026-31-01 18:24:20] [INFO] Waiting 5 seconds for monitor stabilization... 
+[2026-31-01 18:24:25] [INFO] Querying display state... 
+[2026-31-01 18:24:25] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:24:25] [INFO] Monitor count after change: 3 
+[2026-31-01 18:24:25] [INFO] Configuration applied successfully 
+[2026-31-01 18:24:25] [INFO] DisplaySwitcher execution complete with exit code: 0 
+[2026-31-01 18:24:56] [INFO] DisplaySwitcher v1.0.0 starting... 
+[2026-31-01 18:24:56] [INFO] Initializing system... 
+ 
+[2026-31-01 18:24:56] [INFO] System initialization complete 
+[2026-31-01 18:24:56] [INFO] Requested profile: RustDesk 
+[2026-31-01 18:24:56] [INFO] Executing configuration for profile: RustDesk 
+[2026-31-01 18:24:56] [INFO] Querying display state... 
+[2026-31-01 18:24:57] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:24:57] [INFO] Current monitor count: 3 
+[2026-31-01 18:24:57] [INFO] Applying DisplayFusion profile: RustDesk 
+[2026-31-01 18:25:11] [INFO] Profile command sent successfully: RustDesk 
+[2026-31-01 18:25:11] [INFO] Waiting 5 seconds for monitor stabilization... 
+[2026-31-01 18:25:16] [INFO] Querying display state... 
+[2026-31-01 18:25:16] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:25:16] [INFO] Monitor count after change: 3 
+[2026-31-01 18:25:16] [INFO] Configuration applied successfully 
+[2026-31-01 18:25:16] [INFO] DisplaySwitcher execution complete with exit code: 0 
+[2026-31-01 18:27:57] [INFO] DisplaySwitcher v1.0.0 starting... 
+[2026-31-01 18:27:57] [INFO] Initializing system... 
+ 
+[2026-31-01 18:27:57] [INFO] System initialization complete 
+[2026-31-01 18:27:57] [INFO] Using custom profile name: TripleMonitor 
+[2026-31-01 18:27:57] [INFO] Requested profile: TripleMonitor 
+[2026-31-01 18:27:58] [INFO] Executing configuration for profile: TripleMonitor 
+[2026-31-01 18:27:58] [INFO] Querying display state... 
+[2026-31-01 18:27:58] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:27:58] [INFO] Current monitor count: 3 
+[2026-31-01 18:27:58] [INFO] Applying DisplayFusion profile: TripleMonitor 
+[2026-31-01 18:28:14] [INFO] Profile command sent successfully: TripleMonitor 
+[2026-31-01 18:28:14] [INFO] Waiting 5 seconds for monitor stabilization... 
+[2026-31-01 18:28:19] [INFO] Querying display state... 
+[2026-31-01 18:28:19] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:28:19] [INFO] Monitor count after change: 3 
+[2026-31-01 18:28:19] [INFO] Configuration applied successfully 
+[2026-31-01 18:28:19] [INFO] DisplaySwitcher execution complete with exit code: 0 

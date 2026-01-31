@@ -15,10 +15,15 @@ Three monitor switch/
 │       ├── requirements.md                    # Requirements document
 │       ├── design.md                          # Design document
 │       └── tasks.md                           # Implementation tasks
+├── rust_desk/
+│   ├── RustDeskWatcher.ps1                    # RustDesk auto-switch monitor watcher
+│   ├── RustDeskWatcherTask.xml                # Scheduled task definition
+│   ├── Install-RustDeskWatcher.ps1            # Install/uninstall script
+│   ├── Test-RustDeskWatcher.ps1               # Verification tests
+│   ├── RustDeskWatcher.log                    # Runtime log
+│   └── RustDeskWatcher.state                  # State persistence file
 ├── suspend_vms/
 │   └── suspend_vms.bat                        # VM auto-suspend script
-├── RustDeskWatcher.ps1                        # RustDesk auto-switch (optional)
-├── RustDeskWatcherTask.xml                    # Scheduled task for RustDesk watcher
 └── README.md
 ```
 
@@ -86,22 +91,62 @@ regedit /s monitor_switcher\EnableDisplayFusionConfirmPrompt.reg
 
 ---
 
-## RustDesk Auto-Switch (Optional)
+## RustDesk Auto-Switch
 
-**`RustDeskWatcher.ps1`** — A PowerShell script that monitors RustDesk server logs and triggers monitor configs automatically.
+**`rust_desk/RustDeskWatcher.ps1`** — Monitors RustDesk server logs and automatically switches monitor profiles when remote sessions connect/disconnect.
 
-### Setup
+### How it works
 
-1. Update `RustDeskWatcher.ps1` to call DisplaySwitcher instead of the old display_config.bat
-2. Import the scheduled task:
-   ```cmd
-   schtasks /Create /TN "RustDeskWatcher" /XML "RustDeskWatcherTask.xml" /F
-   ```
+1. Watches RustDesk server logs for "Connection opened" / "Connection closed" events
+2. On connect: Saves current profile, switches to `RustDesk` profile (single monitor, low res)
+3. On disconnect: Restores the previous profile automatically
+4. Includes 5-second debounce to prevent rapid switching from connection flapping
 
-RustDesk server logs are tailed from:
+### Installation
+
+Run PowerShell as Administrator:
+```powershell
+cd "C:\Users\mail\Documents\000 Development\Three monitor switch\rust_desk"
+
+# Run tests first
+.\Test-RustDeskWatcher.ps1
+
+# Install as scheduled task (runs at user logon)
+.\Install-RustDeskWatcher.ps1
 ```
-C:\Windows\ServiceProfiles\LocalService\AppData\Roaming\RustDesk\log\server
+
+### Manual Testing
+
+```powershell
+# Run interactively with verbose output (Ctrl+C to stop)
+.\RustDeskWatcher.ps1 -Verbose
+
+# Adjust debounce interval (default 5 seconds)
+.\RustDeskWatcher.ps1 -DebounceSeconds 3
 ```
+
+### Uninstall
+
+```powershell
+.\Install-RustDeskWatcher.ps1 -Uninstall
+```
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `RustDeskWatcher.ps1` | Main watcher script |
+| `RustDeskWatcherTask.xml` | Task Scheduler definition |
+| `Install-RustDeskWatcher.ps1` | Install/uninstall helper |
+| `Test-RustDeskWatcher.ps1` | Pre-flight verification |
+| `RustDeskWatcher.log` | Runtime log |
+| `RustDeskWatcher.state` | Persists previous profile for restore |
+
+### Prerequisites
+
+- RustDesk installed as a Windows service (logs to `C:\Windows\ServiceProfiles\LocalService\...`)
+- DisplayFusion with `RustDesk` profile configured
+- DisplaySwitcher.bat in `monitor_switcher/` folder
 
 ---
 

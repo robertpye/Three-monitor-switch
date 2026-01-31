@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.3" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
-    <Description>Watch RustDesk server logs and auto-switch monitor layout on connect/disconnect.</Description>
+    <Description>Watch RustDesk server logs and auto-switch monitor layout on connect/disconnect. Switches to RustDesk profile on connection, restores previous profile on disconnect.</Description>
     <Author>Rob</Author>
+    <Version>2.0.0</Version>
   </RegistrationInfo>
   <Triggers>
-    <BootTrigger>
+    <LogonTrigger>
       <Enabled>true</Enabled>
+      <UserId>MONSTER\mail</UserId>
       <Delay>PT10S</Delay>
-    </BootTrigger>
+    </LogonTrigger>
   </Triggers>
   <Principals>
     <Principal id="Author">
-      <!-- Run as SYSTEM -->
-      <UserId>S-1-5-18</UserId>
+      <!-- Run as current user with highest privileges for display access -->
+      <UserId>MONSTER\mail</UserId>
       <RunLevel>HighestAvailable</RunLevel>
+      <LogonType>InteractiveToken</LogonType>
     </Principal>
   </Principals>
   <Settings>
@@ -35,12 +38,16 @@
     <WakeToRun>false</WakeToRun>
     <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
     <Priority>7</Priority>
+    <RestartOnFailure>
+      <Interval>PT1M</Interval>
+      <Count>3</Count>
+    </RestartOnFailure>
   </Settings>
   <Actions Context="Author">
     <Exec>
       <Command>powershell.exe</Command>
-      <Arguments>-NoProfile -ExecutionPolicy Bypass -File "C:\Users\mail\Documents\000 Development\Three monitor switch\RustDeskWatcher.ps1"</Arguments>
-      <WorkingDirectory>C:\Users\mail\Documents\000 Development\Three monitor switch</WorkingDirectory>
+      <Arguments>-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\mail\Documents\000 Development\Three monitor switch\rust_desk\RustDeskWatcher.ps1"</Arguments>
+      <WorkingDirectory>C:\Users\mail\Documents\000 Development\Three monitor switch\rust_desk</WorkingDirectory>
     </Exec>
   </Actions>
 </Task>
