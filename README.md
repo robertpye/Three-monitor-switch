@@ -29,7 +29,9 @@ Three monitor switch/
 ├── MultiMonitorTool.exe
 ├── RustDeskWatcher.ps1
 ├── RustDeskWatcherTask.xml
-└── RustDeskWatcher.log   # created at runtime
+├── RustDeskWatcher.log        # created at runtime
+└── suspend_vms/
+    └── suspend_vms.bat
 ```
 
 RustDesk server logs are tailed from:
@@ -149,6 +151,26 @@ Bottom aligned: PositionY = Hc−Hl = 1080−1920 = -840
 From your screenshot, “sticks up a bit” usually means centered. So use PositionY=-420.
 
 Also fix the left X for portrait width: PositionX=-1080 (not -1920).
+
+---
+
+## suspend_vms — VMware VM Auto-Suspend
+
+`suspend_vms/suspend_vms.bat` suspends all running VMware Workstation/Player VMs using `vmrun`. It is intended to be called by **APC PowerChute Serial Shutdown** during a power event, but can also be run manually.
+
+### How it works
+1. Locates `vmrun.exe` (checks PATH, then common install directories).
+2. Runs `vmrun list` to enumerate running VMs.
+3. Suspends each VM (tries soft suspend first, falls back to hard suspend).
+4. Logs all activity to `C:\ProgramData\APC\PowerChute\Logs\VMWare2.log`.
+
+### Usage
+
+```bat
+suspend_vms\suspend_vms.bat
+```
+
+To integrate with PowerChute, configure it as the shutdown command script in the PowerChute Serial Shutdown settings.
 
 ---
 

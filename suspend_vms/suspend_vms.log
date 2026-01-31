@@ -1,0 +1,8 @@
+[31/01/2026 14:09:27.71] "==== VMWare2.cmd starting ===="
+[31/01/2026 14:09:27.76] "Using vmrun: C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe"
+[31/01/2026 14:09:28.07] "Suspending VM (1): E:\008 Virtual Machines\Windows 10 Version 1903\Windows 10 x64.vmx"
+[31/01/2026 14:09:30.01] "Suspending VM (2): L:\VMs\dev1\dev1.vmx"
+[31/01/2026 14:09:31.58] "Suspending VM (3): E:\008 Virtual Machines\iMessage\iMessage.vmx"
+[31/01/2026 14:09:33.36] "Suspending VM (4): E:\008 Virtual Machines\CENTOS-7\CentOS 7 64-bit.vmx"
+[31/01/2026 14:09:35.08] "Suspended 4 VM(s) successfully."
+[31/01/2026 14:09:35.08] "==== VMWare2.cmd completed ===="

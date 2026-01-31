@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -NoProfile -Command \"Get-Content ''C:\\\\ProgramData\\\\APC\\\\PowerChute\\\\Logs\\\\VMWare2.log'' | Select-Object -Last 30\")"
+    ]
+  }
+}
