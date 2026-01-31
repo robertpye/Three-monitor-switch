@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+; Re-enables the "Do you want to keep this Monitor Configuration?" confirmation dialog in DisplayFusion
+; Use this to restore the default behavior
+; To apply: Double-click this file or run: regedit /s EnableDisplayFusionConfirmPrompt.reg
+; Restart DisplayFusion after applying
+
+[HKEY_CURRENT_USER\Software\Binary Fortress Software\DisplayFusion]
+"MonitorConfigDontShowConfirmPrompt"=dword:00000000
