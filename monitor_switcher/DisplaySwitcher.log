@@ -516,3 +516,20 @@
 [2026-31-01 17:33:11] [INFO] Monitor count after change: 3 
 [2026-31-01 17:33:11] [INFO] Configuration applied successfully 
 [2026-31-01 17:33:11] [INFO] DisplaySwitcher execution complete with exit code: 0 
+[2026-31-01 18:10:30] [INFO] DisplaySwitcher v1.0.0 starting... 
+[2026-31-01 18:10:30] [INFO] Initializing system... 
+ 
+[2026-31-01 18:10:30] [INFO] System initialization complete 
+[2026-31-01 18:10:30] [INFO] Requested profile: TripleMonitor 
+[2026-31-01 18:10:30] [INFO] Executing configuration for profile: TripleMonitor 
+[2026-31-01 18:10:30] [INFO] Querying display state... 
+[2026-31-01 18:10:30] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:10:30] [INFO] Current monitor count: 3 
+[2026-31-01 18:10:30] [INFO] Applying DisplayFusion profile: TripleMonitor 
+[2026-31-01 18:10:46] [INFO] Profile command sent successfully: TripleMonitor 
+[2026-31-01 18:10:46] [INFO] Waiting 5 seconds for monitor stabilization... 
+[2026-31-01 18:10:51] [INFO] Querying display state... 
+[2026-31-01 18:10:51] [INFO] Display state query complete. Found 3 monitors. 
+[2026-31-01 18:10:51] [INFO] Monitor count after change: 3 
+[2026-31-01 18:10:51] [INFO] Configuration applied successfully 
+[2026-31-01 18:10:51] [INFO] DisplaySwitcher execution complete with exit code: 0 

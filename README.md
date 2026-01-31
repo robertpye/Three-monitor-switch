@@ -37,14 +37,22 @@ Three monitor switch/
 ### Usage
 
 ```bat
-monitor_switcher\DisplaySwitcher.bat triple      # Enable all three monitors
-monitor_switcher\DisplaySwitcher.bat single      # Center monitor only
-monitor_switcher\DisplaySwitcher.bat dual        # Center + right monitors
-monitor_switcher\DisplaySwitcher.bat vertical    # Center + left monitors
-monitor_switcher\DisplaySwitcher.bat rustdesk    # RustDesk remote access config
-monitor_switcher\DisplaySwitcher.bat -v triple   # Verbose mode
-monitor_switcher\DisplaySwitcher.bat --help      # Show help
+DisplaySwitcher triple      # Enable all three monitors
+DisplaySwitcher single      # Center monitor only
+DisplaySwitcher dual        # Center + right monitors
+DisplaySwitcher vertical    # Center + left monitors
+DisplaySwitcher rustdesk    # RustDesk remote access config
+DisplaySwitcher -v triple   # Verbose mode
+DisplaySwitcher --help      # Show help
 ```
+
+### Installation
+
+Add `monitor_switcher` folder to your PATH for easy access:
+```powershell
+[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Users\mail\Documents\000 Development\Three monitor switch\monitor_switcher", "User")
+```
+Restart your terminal after adding to PATH.
 
 ### Prerequisites
 
