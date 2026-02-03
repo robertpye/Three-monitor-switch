@@ -62,11 +62,33 @@ exit /b 0
 :suspendvm
 set "VMX=%~1"
 call :log "Suspending VM (%COUNT%): %VMX%"
+
+rem Check if VMware Tools is running - if not, skip straight to hard suspend
+set "TOOLSFILE=%TEMP%\vmtools_check.txt"
+"%VMRUN%" checkToolsState "%VMX%" > "%TOOLSFILE%" 2>&1
+set /p TOOLS_STATE=<"%TOOLSFILE%"
+del /q "%TOOLSFILE%" >nul 2>&1
+
+echo %TOOLS_STATE% | findstr /i "running" >nul
+if errorlevel 1 (
+  call :log "VMware Tools not running, using hard suspend"
+  goto :hardsuspend
+)
+
+call :log "VMware Tools running, using soft suspend"
 "%VMRUN%" suspend "%VMX%" soft >> "%LOGFILE%" 2>&1
-if not errorlevel 1 exit /b 0
-call :log "WARN: soft suspend failed; trying hard suspend: %VMX%"
+if not errorlevel 1 (
+  call :log "Successfully suspended (soft): %VMX%"
+  exit /b 0
+)
+call :log "WARN: soft suspend failed; trying hard suspend"
+
+:hardsuspend
 "%VMRUN%" suspend "%VMX%" hard >> "%LOGFILE%" 2>&1
-if not errorlevel 1 exit /b 0
+if not errorlevel 1 (
+  call :log "Successfully suspended (hard): %VMX%"
+  exit /b 0
+)
 call :log "ERROR: hard suspend failed: %VMX%"
 set /a FAIL+=1
 exit /b 1

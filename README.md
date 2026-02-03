@@ -23,7 +23,8 @@ Three monitor switch/
 │   ├── RustDeskWatcher.log                    # Runtime log
 │   └── RustDeskWatcher.state                  # State persistence file
 ├── suspend_vms/
-│   └── suspend_vms.bat                        # VM auto-suspend script
+│   ├── suspend_vms.bat                        # VM auto-suspend script
+│   └── Install_All.ps1                        # Scheduled task installer
 └── README.md
 ```
 
@@ -152,19 +153,55 @@ cd "C:\Users\mail\Documents\000 Development\Three monitor switch\rust_desk"
 
 ## suspend_vms — VMware VM Auto-Suspend
 
-**`suspend_vms/suspend_vms.bat`** — Suspends all running VMware Workstation/Player VMs using `vmrun`. Intended for APC PowerChute Serial Shutdown during power events.
+**`suspend_vms/suspend_vms.bat`** — Suspends all running VMware Workstation/Player VMs using `vmrun`. Designed to run automatically before system shutdown or sleep.
 
 ### How it works
+
 1. Locates `vmrun.exe` (checks PATH, then common install directories)
 2. Runs `vmrun list` to enumerate running VMs
-3. Suspends each VM (tries soft suspend first, falls back to hard suspend)
-4. Logs all activity to `C:\ProgramData\APC\PowerChute\Logs\VMWare2.log`
+3. Checks VMware Tools status for each VM using `vmrun checkToolsState`
+4. Suspends each VM:
+   - **With VMware Tools**: Uses soft suspend (graceful guest coordination)
+   - **Without VMware Tools**: Uses hard suspend immediately (avoids hanging)
+5. Logs all activity to `suspend_vms/suspend_vms.log`
 
-### Usage
+### Installation
+
+Run PowerShell as Administrator:
+
+```powershell
+cd "C:\Users\mail\Documents\000 Development\Three monitor switch\suspend_vms"
+.\Install_All.ps1
+```
+
+This creates two scheduled tasks:
+
+| Task | Trigger | Purpose |
+|------|---------|---------|
+| `SuspendVMware_on_shutdown` | Event ID 1074 | Runs when shutdown/restart is initiated |
+| `SuspendVMware_on_sleep` | Event ID 42 | Runs when system enters sleep/hibernate |
+
+Both tasks run as your user account (required for `vmrun` to see your VMs).
+
+### Manual Usage
 
 ```bat
 suspend_vms\suspend_vms.bat
 ```
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `suspend_vms.bat` | Main VM suspension script |
+| `Install_All.ps1` | Creates scheduled tasks for shutdown/sleep triggers |
+| `suspend_vms.log` | Runtime log (check here for troubleshooting) |
+
+### Notes
+
+- VMs without VMware Tools (e.g., Synology DSM) are automatically hard-suspended to avoid hangs
+- The tasks use `LogonType=Password` so they run even when you're not logged in
+- Check `suspend_vms.log` to verify VMs are being suspended correctly
 
 ---
 
